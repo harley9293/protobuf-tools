@@ -24,7 +24,7 @@ jobs:
       run: |
         GOOS=linux GOARCH=amd64 go build -o ${{ github.ref }}-pbtools-linux-amd64
         GOOS=darwin GOARCH=arm64 go build -o ${{ github.ref }}-pbtools-darwin-arm64
-        GOOS=windows GOARCH=amd64 go build -o ${{ github.ref }}-pbtools-windows-amd64
+        GOOS=windows GOARCH=amd64 go build -o ${{ github.ref }}-pbtools-windows-amd64.exe
 
     - name: Release
       uses: softprops/action-gh-release@v1
@@ -32,4 +32,4 @@ jobs:
         files: |
             ${{ github.ref }}-pbtools-linux-amd64
             ${{ github.ref }}-pbtools-darwin-arm64
-            ${{ github.ref }}-pbtools-windows-amd64
+            ${{ github.ref }}-pbtools-windows-amd64.exe
