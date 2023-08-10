@@ -8,8 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
     - name: Check out code
@@ -26,30 +24,10 @@ jobs:
         GOOS=darwin GOARCH=arm64 go build -o output/pbtools-${{ github.ref }}-darwin-arm64
         GOOS=windows GOARCH=amd64 go build -o output/pbtools-${{ github.ref }}-windows-amd64
 
-    - name: Create Release
-      id: create_release
-      uses: ncipollo/release-action@v1.12.0
-
-    - name: Upload Linux binary
-      uses: actions/upload-release-asset@v1
+    - name: Release
+      uses: softprops/action-gh-release@v1
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./output/pbtools-${{ github.ref }}-linux-amd64
-        asset_name: pbtools
-        asset_content_type: application/octet-stream
-
-    - name: Upload Mac binary
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./output/pbtools-${{ github.ref }}-darwin-arm64
-        asset_name: pbtools
-        asset_content_type: application/octet-stream
-
-    - name: Upload Windows binary
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./output/pbtools-${{ github.ref }}-windows-amd64
-        asset_name: pbtools.exe
-        asset_content_type: application/octet-stream
+        files: |
+          output/pbtools-${{ github.ref }}-linux-amd64
+          output/pbtools-${{ github.ref }}-darwin-arm64
+          output/pbtools-${{ github.ref }}-windows-amd64
