@@ -54,7 +54,7 @@ func processFile(filePath string) {
 
 	updatedContent := string(content)
 	messageRegex := regexp.MustCompile(`message\s+(\w+)\s+\{([^\}]+)\}`)
-	fieldRegex := regexp.MustCompile(`(\s*[\w]+\s+[\w]+\s*=\s*)(\d+)`)
+	fieldRegex := regexp.MustCompile(`(\s*(?:\w+|map<\w+\s*,\s*\w+>)\s+\w+\s*=\s*)(\d+)`)
 
 	matches := messageRegex.FindAllStringSubmatch(string(content), -1)
 	for _, match := range matches {
@@ -68,9 +68,10 @@ func processFile(filePath string) {
 			indices = append(indices, index)
 		}
 
-		mapping := createMapping(indices)
+		ids := createReplaceIDs(indices)
 		messageReplacement := messageContent
-		for oldIdx, newIdx := range mapping {
+		for _, replaceID := range ids {
+			oldIdx, newIdx := replaceID[0], replaceID[1]
 			replaceStr := fmt.Sprintf("${1}%d", newIdx)
 			messageReplacement = fieldRegex.ReplaceAllStringFunc(messageReplacement, func(s string) string {
 				fieldIdx, _ := strconv.Atoi(fieldRegex.ReplaceAllString(s, "$2"))
@@ -91,17 +92,17 @@ func processFile(filePath string) {
 	}
 }
 
-func createMapping(indices []int) map[int]int {
+func createReplaceIDs(indices []int) [][2]int {
 	sort.Ints(indices)
 
-	mapping := make(map[int]int)
+	ids := make([][2]int, len(indices))
 	missing := 1
 	for _, index := range indices {
 		if index != missing {
-			mapping[index] = missing
+			ids = append(ids, [2]int{index, missing})
 		}
 		missing++
 	}
 
-	return mapping
+	return ids
 }
