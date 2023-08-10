@@ -22,14 +22,14 @@ jobs:
 
     - name: Compile for Windows, Mac and Linux
       run: |
-        GOOS=linux GOARCH=amd64 go build -o output/pbtools-${{ github.ref }}-linux-amd64
-        GOOS=darwin GOARCH=arm64 go build -o output/pbtools-${{ github.ref }}-darwin-arm64
-        GOOS=windows GOARCH=amd64 go build -o output/pbtools-${{ github.ref }}-windows-amd64
+        GOOS=linux GOARCH=amd64 go build -o ${{ github.ref }}-pbtools-linux-amd64
+        GOOS=darwin GOARCH=arm64 go build -o ${{ github.ref }}-pbtools-darwin-arm64
+        GOOS=windows GOARCH=amd64 go build -o ${{ github.ref }}-pbtools-windows-amd64
 
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          output/pbtools-${{ github.ref }}-linux-amd64
-          output/pbtools-${{ github.ref }}-darwin-arm64
-          output/pbtools-${{ github.ref }}-windows-amd64
+            ${{ github.ref }}-pbtools-linux-amd64
+            ${{ github.ref }}-pbtools-darwin-arm64
+            ${{ github.ref }}-pbtools-windows-amd64
